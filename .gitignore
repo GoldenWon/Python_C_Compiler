@@ -1,0 +1,8 @@
+# Ignore .i preprocessed files
+*.i
+
+# Ignore .c files
+*.c
+
+# Ignore .s files
+*.s
