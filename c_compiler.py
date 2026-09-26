@@ -2,9 +2,44 @@
 
 import sys
 import subprocess
+import re
 
 def lexer():
-    print('TODO: The damn lexer!')
+    current = ""
+    regexes = [
+        #"[a-zA-Z_]\w*",
+        "main",
+        "[0-9]+",
+        "int",
+        "void",
+        "return",
+        "\(",
+        "\)",
+        "{",
+        "}",
+        ";"
+    ]
+    combined = "(" + ")|(".join(regexes) + ")"
+
+    with open(cPreProcFile) as f:
+        while True:
+            char = f.read(1)
+            if char == "":
+                # Reached EOF
+                break
+            elif char.isspace():
+                # Do nothing. We don't want space.
+                continue
+            else:
+                current += char
+                #print(current)
+                test = "int"
+                if re.match(combined, current):
+                    print(f"Match: {current}")
+                    current = ""
+                else:
+                    print(current)
+                    #print(test)
 
 numArgs = len(sys.argv)
 
