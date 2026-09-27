@@ -6,9 +6,10 @@ import re
 
 def lexer():
     current = ""
+
+    # OG regex
     regexes = [
-        #"[a-zA-Z_]\w*",
-        "main",
+        "[a-zA-Z_]\w*",
         "[0-9]+",
         "int",
         "void",
@@ -21,25 +22,34 @@ def lexer():
     ]
     combined = "(" + ")|(".join(regexes) + ")"
 
+    wordBoundaries = [
+        "\(",
+        "\)",
+        "{",
+        "}",
+        ";"
+    ]
+    wBoundCombined = "(" + ")|(".join(wordBoundaries) + ")"
+
     with open(cPreProcFile) as f:
         while True:
             char = f.read(1)
             if char == "":
                 # Reached EOF
                 break
-            elif char.isspace():
-                # Do nothing. We don't want space.
-                continue
             else:
-                current += char
-                #print(current)
-                test = "int"
-                if re.match(combined, current):
-                    print(f"Match: {current}")
-                    current = ""
+                if char.isspace():
+                    if current:
+                        if re.match(combined, current):
+                            print(f"Match: {current}")
+                            current = ""
+                elif re.match(wBoundCombined, char):
+                    if re.match(combined, current):
+                        print(f"Match: {current}")
+                        current = ""
+                    print(f"Match: {char}")
                 else:
-                    print(current)
-                    #print(test)
+                    current += char
 
 numArgs = len(sys.argv)
 
