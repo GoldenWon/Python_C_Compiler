@@ -9,8 +9,8 @@ def lexer():
 
     # OG regex
     regexes = [
-        "[a-zA-Z_]\w*",
-        "[0-9]+",
+        "[a-zA-Z_][a-zA-Z0-9_]*$",
+        "\d+$",
         "int",
         "void",
         "return",
@@ -34,22 +34,36 @@ def lexer():
     with open(cPreProcFile) as f:
         while True:
             char = f.read(1)
-            if char == "":
+            #if char == "":
+            #    # Reached EOF
+            #    print(f"char: {current}")
+            #    break
+            #else:
+            if char.isspace():
+                if current:
+                    if re.match(combined, current):
+                        print(f"WordMatch: {current}")
+                        current = ""
+            elif re.match(wBoundCombined, char):
+                if current:
+                    if re.match(combined, current):
+                        print(f"WordMatch: {current}")
+                        current = ""
+                    else:
+                        sys.exit(f"Error: {current}")   #print(f"Error: {current}")
+                print(f"CharMatch: {char}")
+            elif char == "":
                 # Reached EOF
+                if current:
+                    #if re.match(combined, current):
+                    #    print(f"WordMatch: {current}")
+                    #    current = ""
+                    #else:
+                    # Must be an error if we didn't catch it earlier.
+                    sys.exit(f"Error: {current}")
                 break
             else:
-                if char.isspace():
-                    if current:
-                        if re.match(combined, current):
-                            print(f"Match: {current}")
-                            current = ""
-                elif re.match(wBoundCombined, char):
-                    if re.match(combined, current):
-                        print(f"Match: {current}")
-                        current = ""
-                    print(f"Match: {char}")
-                else:
-                    current += char
+                current += char
 
 numArgs = len(sys.argv)
 
